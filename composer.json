@@ -1,0 +1,32 @@
+{
+    "name": "bhutanio/movietvdb",
+    "description": "Movie and TV Database API, Scrapes data from themoviedb.org (tmdb), thetvdb.com (tvdb) and omdbapi.com (omdb)",
+    "keywords": ["Movie", "TV", "themoviedb", "tmdb", "thetvdb", "omdbapi", "omdb", "api", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Abi",
+            "email": "abixalmon@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "6.1.*",
+        "moinax/tvdb": "1.0.*",
+        "nesbot/carbon": "1.21.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "symfony/var-dumper": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bhutanio\\": "src/Bhutanio/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1-dev"
+        }
+    }
+}
