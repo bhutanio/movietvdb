@@ -29,4 +29,10 @@ class Movie
     public $videoTrailer;
 
     public $wikiUrl;
+
+    public $tmdbRanking;
+
+    public $imdbRating;
+
+    public $imdbVotes;
 }

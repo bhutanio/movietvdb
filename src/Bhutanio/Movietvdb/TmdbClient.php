@@ -7,7 +7,6 @@ use Bhutanio\Movietvdb\Contracts\MovieInterface;
 class TmdbClient extends Client implements MovieInterface
 {
     protected $apiUrl = 'api.themoviedb.org/3/';
-
     protected $apiSecure = true;
 
     public function __construct($apiKey)
@@ -32,11 +31,15 @@ class TmdbClient extends Client implements MovieInterface
 
     public function credits($id)
     {
-        // TODO: Implement credits() method.
+        $url = $this->apiUrl.'movie/'.$id.'/credits?api_key='.$this->apiKey;
+
+        return $this->toArray($this->request($url));
     }
 
     public function person($id)
     {
-        // TODO: Implement person() method.
+        $url = $this->apiUrl.'person/'.$id.'?api_key='.$this->apiKey;
+
+        return $this->toArray($this->request($url));
     }
 }

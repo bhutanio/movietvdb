@@ -4,7 +4,7 @@ namespace Bhutanio\Movietvdb;
 
 use GuzzleHttp\Client as GuzzleClient;
 
-class Client
+abstract class Client
 {
     protected $guzzle;
 
