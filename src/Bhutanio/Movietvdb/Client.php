@@ -26,7 +26,7 @@ abstract class Client
         $response = $this->guzzle->request('GET', $url, $options);
         $this->validateStatus($response->getStatusCode());
 
-        return (string) $response->getBody();
+        return $response->getBody()->getContents();
     }
 
     public function toArray($string)

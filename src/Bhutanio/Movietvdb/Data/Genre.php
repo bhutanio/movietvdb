@@ -42,6 +42,7 @@ class Genre
     public function __construct(array $genres)
     {
         $this->genre = $this->parseGenres($genres);
+
         return $this->genre;
     }
 

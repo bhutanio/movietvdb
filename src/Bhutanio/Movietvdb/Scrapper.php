@@ -12,7 +12,6 @@ class Scrapper
 
     public function __construct()
     {
-
     }
 
     /**
@@ -29,7 +28,6 @@ class Scrapper
 
     public function scrape()
     {
-        
     }
 
     public function withImdb($id)
