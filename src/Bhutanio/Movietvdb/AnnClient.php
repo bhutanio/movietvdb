@@ -28,10 +28,12 @@ class AnnClient extends Client implements MangaInterface
         $mangas = $xml->manga;
         $staffs = [];
         foreach ($mangas->staff as $staff) {
-            $staffs[str_slug($staff->task)] = $staff->person;
+            $staffs[] = [
+                'task' => $staff->task,
+                'staff' => $staff->person,
+            ];
         }
-        dump($staffs);
-        dd('');
+        return $staffs;
     }
 
     public function authors($id)
