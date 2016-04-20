@@ -1,6 +1,6 @@
 <?php
 
-namespace Bhutanio\Movietvdb;
+namespace Bhutanio\Movietvdb\Clients;
 
 use Bhutanio\Movietvdb\Contracts\MangaInterface;
 use SimpleXMLElement;
@@ -22,17 +22,18 @@ class AnnClient extends Client implements MangaInterface
 
     public function manga($id)
     {
-        $url = $this->apiUrl.'?manga='.$id;
+        $url = $this->apiUrl . '?manga=' . $id;
         $data = $this->request($url);
         $xml = new SimpleXMLElement($data);
         $mangas = $xml->manga;
         $staffs = [];
         foreach ($mangas->staff as $staff) {
             $staffs[] = [
-                'task' => $staff->task,
+                'task'  => $staff->task,
                 'staff' => $staff->person,
             ];
         }
+
         return $staffs;
     }
 

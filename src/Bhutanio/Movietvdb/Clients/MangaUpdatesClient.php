@@ -1,6 +1,6 @@
 <?php
 
-namespace Bhutanio\Movietvdb;
+namespace Bhutanio\Movietvdb\Clients;
 
 use Bhutanio\Movietvdb\Contracts\MangaInterface;
 use Symfony\Component\DomCrawler\Crawler;

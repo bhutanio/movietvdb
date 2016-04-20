@@ -6,7 +6,7 @@ class Genre
 {
     public $genre;
 
-    private $movieGenres = [
+    protected $movieGenres = [
         'Action',
         'Adventure',
         'Animation',
@@ -30,7 +30,7 @@ class Genre
         'Western',
     ];
 
-    private $tvGenres = [
+    protected $tvGenres = [
         'Game-Show',
         'News',
         'Reality-TV',
@@ -42,8 +42,6 @@ class Genre
     public function __construct(array $genres)
     {
         $this->genre = $this->parseGenres($genres);
-
-        return $this->genre;
     }
 
     private function parseGenres($genres)

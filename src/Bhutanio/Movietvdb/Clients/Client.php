@@ -1,6 +1,6 @@
 <?php
 
-namespace Bhutanio\Movietvdb;
+namespace Bhutanio\Movietvdb\Clients;
 
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -16,7 +16,7 @@ abstract class Client
 
     public function __construct($apiUrl, $apiKey = null)
     {
-        $this->apiUrl = ($this->apiSecure ? 'https://' : 'http://').$apiUrl;
+        $this->apiUrl = ($this->apiSecure ? 'https://' : 'http://') . $apiUrl;
         $this->apiKey = $apiKey;
         $this->guzzle = new GuzzleClient();
     }
