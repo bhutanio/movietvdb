@@ -7,10 +7,11 @@ interface MovieTvInterface
     /**
      * Find Movie or Tv using IMDB id
      *
-     * @param string $key
+     * @param array $keys
+     * @param null|string $type
      * @return array
      */
-    public function find($key);
+    public function find($keys, $type = null);
 
     /**
      * @param $id
@@ -23,12 +24,6 @@ interface MovieTvInterface
      * @return \Bhutanio\Movietvdb\Data\Tv
      */
     public function tv($id);
-
-    /**
-     * @param $id
-     * @return array
-     */
-    public function credits($id);
 
     /**
      * @param $id

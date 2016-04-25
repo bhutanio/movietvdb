@@ -6,108 +6,185 @@ use Carbon\Carbon;
 
 class Movie
 {
+    /**
+     * @var string
+     */
     public $imdb;
 
+    /**
+     * @var int
+     */
     public $tmdb;
 
+    /**
+     * @var string
+     */
     public $title;
 
-    public $aka = [];
+    /**
+     * @var array
+     */
+    public $aka;
 
+    /**
+     * @var Carbon
+     */
     public $releaseDate;
 
+    /**
+     * @var int
+     */
     public $releaseYear;
 
+    /**
+     * @var string
+     */
     public $plot;
 
-    public $countries = [];
+    /**
+     * @var array
+     */
+    public $countries;
 
-    public $languages = [];
+    /**
+     * @var string
+     */
+    public $language;
 
-    public $genres = [];
+    /**
+     * @var array
+     */
+    public $languages;
 
+    /**
+     * @var array
+     */
+    public $genres;
+
+    /**
+     * @var int
+     */
     public $runtime;
 
+    /**
+     * @var array
+     */
+    public $actors;
+
+    /**
+     * @var array
+     */
+    public $directors;
+
+    /**
+     * @var array
+     */
+    public $writers;
+
+    /**
+     * @var array
+     */
+    public $producers;
+
+    /**
+     * @var string
+     */
     public $poster;
 
+    /**
+     * @var array
+     */
+    public $posters;
+
+    /**
+     * @var string
+     */
+    public $backdrop;
+
+    /**
+     * @var array
+     */
+    public $backdrops;
+
+    /**
+     * @var string
+     */
     public $videoTrailer;
 
+    /**
+     * @var string
+     */
     public $wikiUrl;
 
+    /**
+     * @var string
+     */
+    public $rated;
+
+    /**
+     * @var float
+     */
     public $tmdbRating;
 
+    /**
+     * @var int
+     */
     public $tmdbVotes;
 
+    /**
+     * @var float
+     */
     public $imdbRating;
 
+    /**
+     * @var int
+     */
     public $imdbVotes;
 
-    public function __construct($data)
+    public function __construct($data = [])
     {
-        $data = $this->initData($data);
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
 
-        $release_date = $data['releaseDate'] ? new Carbon($data['releaseDate']) : null;
-
-        $this->imdb = $data['imdb'];
-        $this->tmdb = $data['tmdb'];
-        $this->title = $data['title'];
-        $this->aka = $data['aka'];
+        if ($this->releaseDate instanceof \DateTime) {
+            $release_date = $this->releaseDate ? (new Carbon())->instance($this->releaseDate) : null;
+        } else {
+            $release_date = $this->releaseDate ? new Carbon($this->releaseDate) : null;
+        }
         $this->releaseDate = $release_date;
         $this->releaseYear = $release_date ? $release_date->year : null;
-        $this->plot = $data['plot'];
-        $this->countries = $data['countries'];
-        $this->languages = $data['languages'];
-        $this->genres = $data['genres'] ? (new Genre($data['genres']))->genre : null;
-        $this->runtime = $data['runtime'];
-        $this->poster = $data['poster'];
-        $this->videoTrailer = $data['videoTrailer'];
-        $this->wikiUrl = $data['wikiUrl'];
-        $this->tmdbRating = $data['tmdbRating'];
-        $this->tmdbVotes = $data['tmdbVotes'];
-        $this->imdbRating = $data['imdbRating'];
-        $this->imdbVotes = $data['imdbVotes'];
+
+        $this->title = $this->cleanTitle($this->title);
     }
 
-    public function merge(Movie $data, Movie $data2, Movie $data3 = null)
+    public function merge(Movie $data, Movie $data2 = null)
     {
-        $args = func_get_args();
-        $base_movie = $args[0];
-        unset($args[0]);
+        $movies = func_get_args();
 
-        foreach ($args as $arg) {
-            foreach ($arg as $arg_key => $arg_value) {
-                if (empty($base_movie->{$arg_key})) {
-                    $base_movie->{$arg_key} = $arg_value;
+        foreach ($movies as $movie) {
+            foreach ($movie as $movie_key => $movie_value) {
+                if (empty($this->$movie_key)) {
+                    $this->$movie_key = $movie_value;
                 }
             }
         }
 
-        return $base_movie;
+        return $this;
     }
 
-    private function initData($data)
+    private function cleanTitle($title)
     {
-        return $data + [
-            'imdb'         => null,
-            'tmdb'         => null,
-            'title'        => null,
-            'aka'          => null,
-            'releaseYear'  => null,
-            'releaseDate'  => null,
-            'plot'         => null,
-            'countries'    => null,
-            'languages'    => null,
-            'genres'       => null,
-            'runtime'      => null,
-            'poster'       => null,
-            'videoTrailer' => null,
-            'wikiUrl'      => null,
-            'tmdbRating'   => null,
-            'tmdbVotes'    => null,
-            'imdbRating'   => null,
-            'imdbVotes'    => null,
-        ];
+        if (strlen($title) > 4) {
+            $might_be_year_one = str_replace(substr($title, 0, -6), '', $title);
+            $might_be_year = str_replace(['(', ')'], '', $might_be_year_one);
+            if ($might_be_year > 1900 && $might_be_year < (date('Y') + 100)) {
+                $title = trim(str_replace($might_be_year_one, '', $title));
+            }
+        }
+
+        return $title;
     }
-
-
 }

@@ -4,6 +4,7 @@ namespace Bhutanio\Movietvdb\Clients;
 
 use Bhutanio\Movietvdb\Contracts\MovieTvInterface;
 use Bhutanio\Movietvdb\Data\Movie;
+use Bhutanio\Movietvdb\Data\Tv;
 
 class OmdbClient extends Client implements MovieTvInterface
 {
@@ -16,14 +17,22 @@ class OmdbClient extends Client implements MovieTvInterface
         parent::__construct($this->apiUrl, $apiKey);
     }
 
-    public function find($key)
+    public function find($keys, $type = null)
     {
-        $this->validateImdbId($key);
-        $url = $this->apiUrl . '/?i=' . $key . '&plot=full&r=json';
+        $this->validateImdbId($keys['imdb']);
+        $url = $this->apiUrl . '/?i=' . $keys['imdb'] . '&plot=full&r=json';
 
-        $data = $this->toArray($this->request($url));
-        if (isset($data['Response']) && $data['Response'] == 'True') {
-            return $data;
+        $result = $this->toArray($this->request($url));
+        if (isset($result['Response']) && $result['Response'] == 'True') {
+            $result = array_map(function ($value) {
+                if ($value == 'N/A') {
+                    return null;
+                }
+
+                return $value;
+            }, $result);
+
+            return $result;
         }
 
         return null;
@@ -31,27 +40,26 @@ class OmdbClient extends Client implements MovieTvInterface
 
     public function movie($id)
     {
-        return $this->formatMovie($this->find($id));
+        return $this->formatMovie($this->find(['imdb' => $id], 'movie'), 'movie');
     }
 
     public function tv($id)
     {
-        return $this->find($id);
-    }
-
-    public function credits($id)
-    {
-        // TODO: Implement credits() method.
+        return $this->formatMovie($this->find(['imdb' => $id], 'series'), 'series');
     }
 
     public function person($id)
     {
-        // TODO: Implement person() method.
+        //
     }
 
-    private function formatMovie($movie)
+    private function formatMovie($movie, $type = 'movie')
     {
-        return new Movie([
+        if ($movie['Type'] != $type) {
+            return ($type == 'movie') ? new Movie([]) : new Tv([]);
+        }
+
+        $data = [
             'imdb'         => $movie['imdbID'],
             'title'        => $movie['Title'],
             'releaseDate'  => $movie['Released'],
@@ -59,12 +67,15 @@ class OmdbClient extends Client implements MovieTvInterface
             'languages'    => $this->formatLanguages($movie['Language']),
             'genres'       => $this->formatGenres($movie['Genre']),
             'runtime'      => (float)$movie['Runtime'],
-            'poster'       => $movie['Poster'],
+            'poster'       => $this->resizePoster($movie['Poster']),
             'videoTrailer' => null,
             'wikiUrl'      => null,
+            'rated'        => $movie['Rated'],
             'imdbRating'   => $movie['imdbRating'],
             'imdbVotes'    => str_replace(',', '', $movie['imdbVotes']),
-        ]);
+        ];
+
+        return ($type == 'movie') ? new Movie($data) : new Tv($data);
     }
 
     private function formatLanguages($languages)
@@ -94,5 +105,10 @@ class OmdbClient extends Client implements MovieTvInterface
         }
 
         return $movie_genres;
+    }
+
+    private function resizePoster($poster)
+    {
+        return str_replace('SX300', 'SX780', $poster);
     }
 }

@@ -4,85 +4,87 @@ namespace Bhutanio\Movietvdb;
 
 use Bhutanio\Movietvdb\Clients\OmdbClient;
 use Bhutanio\Movietvdb\Clients\TmdbClient;
+use Bhutanio\Movietvdb\Clients\TvdbClient;
 use Bhutanio\Movietvdb\Data\Movie;
+use Bhutanio\Movietvdb\Data\Tv;
 
 class MovieScrapper
 {
-    public $type;
-
-    protected $imdb;
-    protected $tmdb;
-    protected $tvdb;
-
     private $tmdbClient;
     private $omdbClient;
+    private $tvdbClient;
 
     public function __construct($tmdb_key = null, $tvdb_key = null, $omdb_key = null)
     {
         $this->tmdbClient = new TmdbClient($tmdb_key);
         $this->omdbClient = new OmdbClient($omdb_key);
+        $this->tvdbClient = new TvdbClient($tvdb_key);
     }
 
     /**
-     * @param string $type movie,tv,anime
-     *
-     * @return $this
+     * @param $type
+     * @param null $imdb
+     * @param null $tmdb
+     * @param null $tvdb
+     * @return Movie|Tv
+     * @throws \ErrorException
      */
-    public function type($type)
+    public function scrape($type, $imdb = null, $tmdb = null, $tvdb = null)
     {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function scrape()
-    {
-        $movie = new Movie([]);
-        $tmdb_movie = new Movie([]);
-        $omdb_movie = new Movie([]);
-
-        if ($this->type == 'movie') {
-            if ($this->imdb && !$this->tmdb) {
-                $tmdb_results = $this->tmdbClient->find($this->imdb);
-                if (isset($tmdb_results['movie_results'][0]['id'])) {
-                    $tmdb_movie = $this->tmdbClient->movie($tmdb_results['movie_results'][0]['id']);
-                    $this->tmdb = empty($this->tmdb) ? $tmdb_movie->tmdb : $this->tmdb;
-                }
-                $omdb_movie = $this->omdbClient->movie($this->imdb);
-            }
-
-            if ($this->tmdb && !$this->imdb) {
-                $tmdb_movie = $this->tmdbClient->movie($this->tmdb);
-                $this->imdb = empty($this->imdb) ? $tmdb_movie->imdb : $this->imdb;
-            }
-
-            if ($this->tmdb && $this->imdb) {
-                $tmdb_movie = $this->tmdbClient->movie($this->tmdb);
-                $omdb_movie = $this->omdbClient->movie($this->imdb);
-            }
+        if (!$imdb && !$tmdb && !$tvdb) {
+            throw new \ErrorException('Either $imdb, $tmdb or $tvdb is required');
         }
 
-        return $movie->merge($tmdb_movie, $omdb_movie);
+        if ($type == 'movie') {
+            $omdb_movie = $tmdb_movie = new Movie();
+
+            if ($tmdb) {
+                $tmdb_movie = $this->tmdbClient->movie($tmdb);
+                $imdb = empty($imdb) ? $tmdb_movie->imdb : $imdb;
+            }
+
+            if ($imdb) {
+                if (!$tmdb_movie->title) {
+                    $tmdb_movie = $this->tmdbClient->find(['imdb' => $imdb], $type);
+                }
+                $omdb_movie = $this->omdbClient->movie($imdb);
+            }
+
+            return $tmdb_movie->merge($omdb_movie);
+        }
+
+        if ($type == 'tv') {
+            $omdb_tv = $tmdb_tv = $tvdb_tv = new Tv();
+
+            if ($tvdb) {
+                $tvdb_tv = $this->tvdbClient->tv($tvdb);
+                $imdb = empty($imdb) ? $tvdb_tv->imdb : $imdb;
+            }
+
+            if ($tmdb) {
+                $tmdb_tv = $this->tmdbClient->tv($tmdb);
+                $imdb = empty($imdb) ? $tmdb_tv->imdb : $imdb;
+            }
+
+            if ($imdb) {
+                if(!$tmdb_tv->title) {
+                    $tmdb_tv = $this->tmdbClient->find(['imdb' => $imdb], 'tv');
+                    $tvdb = empty($tvdb) ? $tmdb_tv->tvdb : $tvdb;
+                }
+                $tvdb_tv = $this->tvdbClient->find(['imdb' => $imdb]);
+                $omdb_tv = $this->omdbClient->tv($imdb);
+            }
+            if ($tvdb && !$tvdb_tv->title) {
+                $tvdb_tv = $this->tvdbClient->tv($tvdb);
+            }
+
+            return $tvdb_tv->merge($tmdb_tv, $omdb_tv);
+        }
+
     }
 
-    public function withImdb($id)
+    public function person($tmdb)
     {
-        $this->imdb = $id;
-
-        return $this;
-    }
-
-    public function withTmdb($id)
-    {
-        $this->tmdb = $id;
-
-        return $this;
-    }
-
-    public function withTvdb($id)
-    {
-        $this->tvdb = $id;
-
-        return $this;
+        return $this->tmdbClient->person($tmdb);
     }
 }

@@ -4,7 +4,7 @@ namespace Bhutanio\Movietvdb\Data;
 
 class Genre
 {
-    public $genre;
+    public $genres;
 
     protected $movieGenres = [
         'Action',
@@ -23,7 +23,7 @@ class Genre
         'Musical',
         'Mystery',
         'Romance',
-        'Sci-Fi',
+        'Science Fiction',
         'Sport',
         'Thriller',
         'War',
@@ -41,7 +41,7 @@ class Genre
 
     public function __construct(array $genres)
     {
-        $this->genre = $this->parseGenres($genres);
+        $this->genres = $this->parseGenres($genres);
     }
 
     private function parseGenres($genres)
@@ -62,8 +62,8 @@ class Genre
     private function matchGenre($genre)
     {
         switch ($genre) {
-            case 'Science Fiction':
-                return 'Sci-Fi';
+            case 'Sci-Fi':
+                return 'Science Fiction';
                 break;
         }
 

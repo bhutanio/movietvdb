@@ -3,10 +3,13 @@
 namespace Bhutanio\Movietvdb\Clients;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Predis\Client as RedisClient;
 
 abstract class Client
 {
     protected $guzzle;
+
+    protected $redis;
 
     protected $apiUrl;
 
@@ -16,6 +19,7 @@ abstract class Client
 
     public function __construct($apiUrl, $apiKey = null)
     {
+        $this->redis = new RedisClient();
         $this->apiUrl = ($this->apiSecure ? 'https://' : 'http://') . $apiUrl;
         $this->apiKey = $apiKey;
         $this->guzzle = new GuzzleClient();
@@ -23,10 +27,17 @@ abstract class Client
 
     public function request($url, array $options = [])
     {
+        $key = md5($url . serialize($options));
+        if ($cache = $this->cache($key)) {
+            return $cache;
+        }
+
         $response = $this->guzzle->request('GET', $url, $options);
         $this->validateStatus($response->getStatusCode());
 
-        return $response->getBody()->getContents();
+        $content = $response->getBody()->getContents();
+
+        return $this->cache($key, $content);
     }
 
     public function toArray($string)
@@ -37,6 +48,23 @@ abstract class Client
     public function toJson(array $array, $options = 0)
     {
         return json_encode($array, $options);
+    }
+
+    public function cache($key, $data = null)
+    {
+        $key = 'movietvdb:' . $key;
+
+        if ($data) {
+            $this->redis->setex($key, 86400, serialize($data));
+
+            return $data;
+        }
+
+        if ($cache = $this->redis->get($key)) {
+            return unserialize($cache);
+        }
+
+        return $data;
     }
 
     protected function validateImdbId($key)
