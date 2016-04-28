@@ -162,7 +162,7 @@ class Movie
 
         $this->title = $this->cleanTitle($this->title);
 
-        $this->genres = $this->cleanGenres($this->genres);
+        $this->genres = !empty($this->genres) ? $this->cleanGenres($this->genres) : null;
     }
 
     public function merge(Movie $data, Movie $data2 = null)
@@ -195,7 +195,7 @@ class Movie
 
     private function cleanGenres($genres)
     {
-        $genres = new Genre($genres);
+        $genres = new Genre((array)$genres);
 
         return $genres->genres;
     }
