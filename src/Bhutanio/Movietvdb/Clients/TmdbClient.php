@@ -44,16 +44,22 @@ class TmdbClient extends Client implements MovieTvInterface
         }
 
         if ($type == 'tv') {
+            $url = null;
             if (isset($keys['imdb'])) {
                 $this->validateImdbId($keys['imdb']);
                 $url = $this->apiUrl . 'find/' . $keys['imdb'] . '?api_key=' . $this->apiKey . '&external_source=imdb_id';
+            }
+            if (isset($keys['tvdb'])) {
+                $url = $this->apiUrl . 'find/' . $keys['tvdb'] . '?api_key=' . $this->apiKey . '&external_source=tvdb_id';
+            }
+            if ($url) {
                 $results = $this->toArray($this->request($url));
                 if (isset($results['tv_results'][0]['id'])) {
                     return $this->tv($results['tv_results'][0]['id']);
                 }
-
-                return new Tv();
             }
+
+            return new Tv();
         }
 
         throw new \HttpInvalidParamException('What are you trying to find?');

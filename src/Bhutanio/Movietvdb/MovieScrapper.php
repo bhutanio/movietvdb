@@ -59,6 +59,10 @@ class MovieScrapper
             if ($tvdb) {
                 $tvdb_tv = $this->tvdbClient->tv($tvdb);
                 $imdb = empty($imdb) ? $tvdb_tv->imdb : $imdb;
+
+                $tmdb_tv = $this->tmdbClient->find(['tvdb' => $tvdb], 'tv');
+                $imdb = empty($imdb) ? $tmdb_tv->imdb : $imdb;
+                $tmdb = empty($tmdb) ? $tmdb_tv->tmdb : $tmdb;
             }
 
             if ($tmdb) {
