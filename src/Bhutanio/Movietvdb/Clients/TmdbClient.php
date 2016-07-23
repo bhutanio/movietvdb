@@ -278,7 +278,8 @@ class TmdbClient extends Client implements MovieTvInterface
         }
         if ($alternative_titles) {
             foreach ($alternative_titles as $aka_title) {
-                if (strtolower($aka_title['title']) != strtolower($original_title)) {
+                similar_text($original_title, $aka_title['title'], $percent);
+                if ($percent < 95) {
                     $akas[] = $aka_title['title'];
                 }
             }

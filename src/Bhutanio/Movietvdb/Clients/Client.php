@@ -74,7 +74,7 @@ abstract class Client
         }
     }
 
-    private function validateStatus($statusCode)
+    protected function validateStatus($statusCode)
     {
         if ($statusCode < 200 && $statusCode > 299) {
             throw new \HttpResponseException('Invalid Status Code');
