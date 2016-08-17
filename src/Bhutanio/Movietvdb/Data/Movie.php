@@ -186,8 +186,10 @@ class Movie
             }
         }
 
+        if (!empty($this->aka)) {
+            $this->aka = $this->removeSimilar($this->aka, $this->title, 90);
+        }
 
-        $this->aka = $this->removeSimilar($this->aka, $this->title, 90);
         $this->genres = array_unique($this->genres);
 
         return $this;
