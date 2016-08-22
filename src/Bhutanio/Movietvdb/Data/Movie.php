@@ -256,6 +256,10 @@ class Movie
 
     private function genreMerge($genres)
     {
+        if (empty($this->genres) && $genres) {
+            $this->genres = [];
+        }
+
         if (is_array($genres)) {
             foreach ($genres as $genre) {
                 array_push($this->genres, $genre);
