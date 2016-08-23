@@ -190,7 +190,7 @@ class Movie
             $this->aka = $this->removeSimilar($this->aka, $this->title, 90);
         }
 
-        $this->genres = array_unique($this->genres);
+        $this->genres = !empty($this->genres) ? array_unique($this->genres) : $this->genres;
 
         return $this;
     }
@@ -234,8 +234,10 @@ class Movie
             }
         }
 
-        $data = array_filter($data);
-        $data = array_unique($data);
+        if (!empty($data)) {
+            $data = array_filter($data);
+            $data = array_unique($data);
+        }
 
         foreach ($data as $keyOne => $valueOne) {
             foreach ($data as $keyTwo => $valueTwo) {
@@ -248,8 +250,10 @@ class Movie
             }
         }
 
-        $data = array_filter($data);
-        $data = array_unique($data);
+        if (!empty($data)) {
+            $data = array_filter($data);
+            $data = array_unique($data);
+        }
 
         return $data;
     }

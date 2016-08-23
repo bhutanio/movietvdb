@@ -285,8 +285,10 @@ class TmdbClient extends Client implements MovieTvInterface
             }
         }
 
-        $akas = array_filter($akas);
-        $akas = array_unique($akas);
+        if (!empty($akas)) {
+            $akas = array_filter($akas);
+            $akas = array_unique($akas);
+        }
 
         return $akas;
     }
