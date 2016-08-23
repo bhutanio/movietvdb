@@ -19,7 +19,8 @@ class OmdbClient extends Client implements MovieTvInterface
 
     public function find($keys, $type = null)
     {
-        $this->validateImdbId($keys['imdb']);
+        $this->validateKeys($keys);
+
         $url = $this->apiUrl . '/?i=' . $keys['imdb'] . '&plot=full&r=json';
 
         $result = $this->toArray($this->request($url));

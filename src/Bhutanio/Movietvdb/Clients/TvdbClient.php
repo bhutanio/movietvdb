@@ -28,6 +28,8 @@ class TvdbClient extends Client implements MovieTvInterface
 
     public function find($keys, $type = 'tv')
     {
+        $this->validateKeys($keys);
+
         $key = 'tvdb' . $keys['imdb'];
         $result = $this->cache($key);
         if (!$result) {
@@ -49,6 +51,8 @@ class TvdbClient extends Client implements MovieTvInterface
 
     public function tv($id)
     {
+        $this->validateKeys(['tvdb' => $id]);
+
         $key = 'tvdb' . $id;
         $result = $this->cache($key);
         if (!$result) {

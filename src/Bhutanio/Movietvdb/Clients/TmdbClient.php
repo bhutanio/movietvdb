@@ -29,9 +29,10 @@ class TmdbClient extends Client implements MovieTvInterface
      */
     public function find($keys, $type = 'movie')
     {
+        $this->validateKeys($keys);
+
         if ($type == 'movie') {
             if (isset($keys['imdb'])) {
-                $this->validateImdbId($keys['imdb']);
                 $url = $this->apiUrl . 'find/' . $keys['imdb'] . '?api_key=' . $this->apiKey . '&external_source=imdb_id';
                 $results = $this->toArray($this->request($url));
 
@@ -46,7 +47,6 @@ class TmdbClient extends Client implements MovieTvInterface
         if ($type == 'tv') {
             $url = null;
             if (isset($keys['imdb'])) {
-                $this->validateImdbId($keys['imdb']);
                 $url = $this->apiUrl . 'find/' . $keys['imdb'] . '?api_key=' . $this->apiKey . '&external_source=imdb_id';
             }
             if (isset($keys['tvdb'])) {
@@ -72,6 +72,8 @@ class TmdbClient extends Client implements MovieTvInterface
      */
     public function movie($id, $type = 'movie')
     {
+        $this->validateKeys(['tmdb' => $id]);
+
         $url = $this->apiUrl . $type . '/' . $id . '?append_to_response=alternative_titles,credits,videos,images,keywords,external_ids&api_key=' . $this->apiKey;
         $movie = $this->toArray($this->request($url));
 
@@ -91,6 +93,8 @@ class TmdbClient extends Client implements MovieTvInterface
 
     public function person($id)
     {
+        $this->validateKeys(['tmdb' => $id]);
+
         $url = $this->apiUrl . 'person/' . $id . '?append_to_response=external_ids,images&api_key=' . $this->apiKey;
 
         return $this->formatPerson($this->toArray($this->request($url)));

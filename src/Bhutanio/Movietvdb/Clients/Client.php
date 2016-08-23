@@ -67,10 +67,24 @@ abstract class Client
         return $data;
     }
 
-    protected function validateImdbId($key)
+    protected function validateKeys($keys)
     {
-        if (!preg_match('/tt\\d{7}/', $key)) {
-            throw new \InvalidArgumentException('Invalid IMDB ID');
+        if (!empty($keys['imdb'])) {
+            if (!preg_match('/tt\\d{7}/', $keys['imdb'])) {
+                throw new \InvalidArgumentException('Invalid IMDB ID');
+            }
+        }
+
+        if (!empty($keys['tmdb'])) {
+            if (!is_numeric($keys['tmdb'])) {
+                throw new \InvalidArgumentException('Invalid TMDB ID');
+            }
+        }
+
+        if (!empty($keys['tvdb'])) {
+            if (!is_numeric($keys['tvdb'])) {
+                throw new \InvalidArgumentException('Invalid TVDB ID');
+            }
         }
     }
 
