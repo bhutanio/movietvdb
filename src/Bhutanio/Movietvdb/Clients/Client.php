@@ -32,12 +32,20 @@ abstract class Client
             return $cache;
         }
 
-        $response = $this->guzzle->request('GET', $url, $options);
-        $this->validateStatus($response->getStatusCode());
+        try {
+            $response = $this->guzzle->request('GET', $url, $options);
+        } catch (\Exception $e) {
 
-        $content = $response->getBody()->getContents();
+        }
 
-        return $this->cache($key, $content);
+        if (!empty($response)) {
+            $this->validateStatus($response->getStatusCode());
+            $content = $response->getBody()->getContents();
+
+            return $this->cache($key, $content);
+        }
+
+        return null;
     }
 
     public function toArray($string)
