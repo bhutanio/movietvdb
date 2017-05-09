@@ -10,7 +10,7 @@ class OmdbClient extends Client implements MovieTvInterface
 {
 
     protected $apiUrl = 'www.omdbapi.com';
-    protected $apiSecure = false;
+    protected $apiSecure = true;
 
     public function __construct($apiKey = null)
     {
