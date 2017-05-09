@@ -21,7 +21,7 @@ class OmdbClient extends Client implements MovieTvInterface
     {
         $this->validateKeys($keys);
 
-        $url = $this->apiUrl . '/?i=' . $keys['imdb'] . '&plot=full&r=json';
+        $url = $this->apiUrl . '/?i=' . $keys['imdb'] . '&plot=full&r=json&apikey=' . $this->apiKey;
 
         $result = $this->toArray($this->request($url));
         if (isset($result['Response']) && $result['Response'] == 'True') {
@@ -67,7 +67,7 @@ class OmdbClient extends Client implements MovieTvInterface
             'plot'         => $movie['Plot'],
             'languages'    => $this->formatLanguages($movie['Language']),
             'genres'       => $this->formatGenres($movie['Genre']),
-            'runtime'      => (float)$movie['Runtime'],
+            'runtime'      => (float) $movie['Runtime'],
             'poster'       => $this->resizePoster($movie['Poster']),
             'videoTrailer' => null,
             'wikiUrl'      => null,
