@@ -36,7 +36,8 @@ class MangaUpdatesClient extends Client implements MangaInterface
         $aka_titles = explode('<br />', $aka_titles[1]);
         $data['aka_titles'] = array_filter($aka_titles, 'html_entity_decode');
 
-        preg_match('/(?:class\=\"sCat\"\>\<b\>Genre\<\/b\>\<\/div\>)+\n?(?:\<div class\=\"sContent\" \>)(.+)(?:\n?+\<\/div\>)/i', $webpage,
+        preg_match('/(?:class\=\"sCat\"\>\<b\>Genre\<\/b\>\<\/div\>)+\n?(?:\<div class\=\"sContent\" \>)(.+)(?:\n?+\<\/div\>)/i',
+            $webpage,
             $genre_block);
         preg_match_all('/series\.html\?act\=genresearch\&amp\;genre\=([\w-+]+)/i', $genre_block[1], $genres);
         $data['genres'] = array_filter($genres[1], 'urldecode');

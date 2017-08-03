@@ -67,7 +67,7 @@ class OmdbClient extends Client implements MovieTvInterface
             'plot'         => $movie['Plot'],
             'languages'    => $this->formatLanguages($movie['Language']),
             'genres'       => $this->formatGenres($movie['Genre']),
-            'runtime'      => (float) $movie['Runtime'],
+            'runtime'      => (float)$movie['Runtime'],
             'poster'       => $this->resizePoster($movie['Poster']),
             'videoTrailer' => null,
             'wikiUrl'      => null,

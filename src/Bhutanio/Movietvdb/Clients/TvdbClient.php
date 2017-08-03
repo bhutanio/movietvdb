@@ -84,7 +84,7 @@ class TvdbClient extends Client implements MovieTvInterface
             'tvdbRating'  => $tv->rating,
             'tvdbVotes'   => $tv->ratingCount,
             'poster'      => !empty($tv->poster) ? $this->imagePath . $tv->poster : null,
-            'episodes'    => $this->formatEpisodes($data['episodes'])
+            'episodes'    => $this->formatEpisodes($data['episodes']),
         ]);
     }
 
