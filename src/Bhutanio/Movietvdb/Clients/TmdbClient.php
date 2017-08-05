@@ -24,7 +24,7 @@ class TmdbClient extends Client implements MovieTvInterface
     /**
      * @param array $keys
      * @param string $type
-     * @return Movie
+     * @return Movie | Tv
      * @throws \HttpInvalidParamException
      */
     public function find($keys, $type = 'movie')
