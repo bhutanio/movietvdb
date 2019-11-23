@@ -28,12 +28,14 @@ class TvdbClient extends Client implements MovieTvInterface
     public function find($keys, $type = 'tv')
     {
         $this->validateKeys($keys);
-
         $key = 'tvdb' . $keys['imdb'];
         $result = $this->cache($key);
         if (!$result) {
-            $result = $this->tvdb_api->getSerieByRemoteId(['imdbid' => $keys['imdb']]);
-            $this->cache($key, $result);
+            try {
+                $result = $this->tvdb_api->getSerieByRemoteId(['imdbid' => $keys['imdb']]);
+                $this->cache($key, $result);
+            } catch (\Exception $e) {
+            }
         }
 
         if (!empty($result->id)) {

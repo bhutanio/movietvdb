@@ -11,5 +11,4 @@ class MoinaxClient extends \Moinax\TvDb\Client
 
         return str_replace('http://', 'https://', $url);
     }
-
 }
