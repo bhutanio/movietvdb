@@ -5,25 +5,24 @@ namespace Bhutanio\Movietvdb\Clients;
 use Bhutanio\Movietvdb\Contracts\MovieTvInterface;
 use Bhutanio\Movietvdb\Data\Episode;
 use Bhutanio\Movietvdb\Data\Tv;
-use Moinax\TvDb\Client as MoinaxTvDbClient;
 
 class TvdbClient extends Client implements MovieTvInterface
 {
 
     protected $apiUrl = 'thetvdb.com';
-    protected $apiSecure = false;
+    protected $apiSecure = true;
 
     /**
-     * @var MoinaxTvDbClient
+     * @var MoinaxClient
      */
     private $tvdb_api;
 
-    private $imagePath = 'http://thetvdb.com/banners/';
+    private $imagePath = 'https://thetvdb.com/banners/';
 
     public function __construct($apiKey)
     {
         parent::__construct($this->apiUrl, $apiKey);
-        $this->tvdb_api = new MoinaxTvDbClient($this->apiUrl, $this->apiKey);
+        $this->tvdb_api = new MoinaxClient($this->apiUrl, $this->apiKey);
     }
 
     public function find($keys, $type = 'tv')
