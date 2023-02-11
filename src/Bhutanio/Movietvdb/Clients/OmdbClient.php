@@ -56,7 +56,7 @@ class OmdbClient extends Client implements MovieTvInterface
 
     private function formatMovie($movie, $type = 'movie')
     {
-        if ($movie['Type'] != $type) {
+        if (empty($movie['Type']) || $movie['Type'] != $type) {
             return ($type == 'movie') ? new Movie([]) : new Tv([]);
         }
 
